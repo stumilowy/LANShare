@@ -1,8 +1,12 @@
 package pl.rigo.features.dashboard.presentation
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import pl.rigo.features.dashboard.presentation.components.StandardButton
 
 @Composable
 fun DashboardScreenRoot(viewModel: DashboardViewModel = remember { DashboardViewModel() }) {
@@ -17,5 +21,22 @@ fun DashboardScreen(
     state: DashboardState,
     onAction: (DashboardAction) -> Unit,
 ) {
-    Surface { }
+    Surface {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column {
+                StandardButton(
+                    text = if (state.isServerRunning) "Stop Server" else "Start Server",
+                    onClick = {
+                        if (state.isServerRunning) {
+                            onAction(DashboardAction.OnServerStop)
+                        } else {
+                            onAction(DashboardAction.OnServerStart)
+                        }
+                    },
+                )
+            }
+        }
+    }
 }
