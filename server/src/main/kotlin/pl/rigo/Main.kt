@@ -7,8 +7,8 @@ fun main() {
             host = "0.0.0.0",
             appConfig =
                 AppConfig(
-                    defaultSavingDirection = "C:\\Users\\Public\\Downloads",
+                    defaultSavingDirection = "C:\\Users\\jacek\\Desktop",
                 ),
         )
-    server.start(8080, "0.0.0.0")
+    server.start()
 }

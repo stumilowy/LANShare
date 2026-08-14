@@ -3,9 +3,9 @@ package pl.rigo
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import io.ktor.server.application.Application
+import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.staticResources
-import io.ktor.server.netty.Netty
 import io.ktor.server.request.receiveMultipart
 import io.ktor.server.response.respondRedirect
 import io.ktor.server.routing.get
@@ -24,7 +24,7 @@ class FileServer(
     private val appConfig: AppConfig,
 ) : Server {
     private val server =
-        embeddedServer(Netty, port = port, host = host) {
+        embeddedServer(CIO, port = port, host = host) {
             configureRouting()
         }
 
@@ -39,7 +39,7 @@ class FileServer(
     }
 
     override fun stop() {
-        TODO("Not yet implemented")
+        server.stop(0, 0)
     }
 
     private fun checkConfiguration(): Boolean {
@@ -56,21 +56,49 @@ class FileServer(
             staticResources("/static", "static")
 
             staticResources("/fileshare", "static", index = "index.html")
+            staticResources("/success", "static", index = "index.html")
 
             post("/upload") {
                 val multipartData = call.receiveMultipart()
+                var customName: String? = null
+
                 multipartData.forEachPart { part ->
-                    if (part is PartData.FileItem) {
-                        val fileName = part.originalFileName ?: "unnamed_file"
-                        val file = File(appConfig.currentSavingDirection, fileName)
+                    when (part) {
+                        is PartData.FormItem -> {
+                            if (part.name == "customFileName" && part.value.isNotBlank()) {
+                                customName = part.value
+                            }
+                            part.release()
+                        }
 
-                        val readChannel: ByteReadChannel = part.provider()
-                        val writeChannel = file.writeChannel()
+                        is PartData.FileItem -> {
+                            val originalName = part.originalFileName ?: "unnamed_file"
+                            val finalFileName =
+                                if (customName != null) {
+                                    val extension = originalName.substringAfterLast('.', "")
+                                    if (extension.isNotEmpty()) "$customName.$extension" else customName
+                                } else {
+                                    originalName
+                                }
+                            val file = File(appConfig.currentSavingDirection, finalFileName)
 
-                        readChannel.copyTo(writeChannel)
+                            val readChannel: ByteReadChannel = part.provider()
+                            val writeChannel = file.writeChannel()
+
+                            try {
+                                readChannel.copyTo(writeChannel)
+                            } finally {
+                                writeChannel.flushAndClose()
+                            }
+                            part.release()
+                        }
+
+                        else -> {
+                            part.release()
+                        }
                     }
-                    part.release()
                 }
+                call.respondRedirect("/fileshare?status=success")
             }
         }
     }

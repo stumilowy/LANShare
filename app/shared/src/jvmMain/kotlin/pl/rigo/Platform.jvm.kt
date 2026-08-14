@@ -1,6 +1,8 @@
 package pl.rigo
 
-class JVMPlatform: Platform {
+import pl.rigo.features.dashboard.presentation.DashboardState
+
+class JVMPlatform : Platform {
     override val name: String = "Java ${System.getProperty("java.version")}"
 }
 

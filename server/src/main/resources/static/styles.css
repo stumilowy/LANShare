@@ -101,3 +101,39 @@ input[type="file"] {
 .submit-btn:active {
     transform: scale(0.99);
 }
+
+.alert-success {
+    display: none;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #a5d6a7;
+    font-weight: bold;
+}
+
+.file-input-container {
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+/* Dodatkowy styl dla pola tekstowego */
+.input-group {
+    margin: 15px 0;
+    text-align: left;
+}
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+.text-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
