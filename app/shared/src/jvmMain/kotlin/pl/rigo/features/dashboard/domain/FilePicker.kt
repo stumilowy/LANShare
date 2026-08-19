@@ -5,7 +5,7 @@ import androidx.compose.runtime.remember
 import java.nio.file.Path
 
 actual class FilePicker {
-    actual fun openDirectoryPicker(): Path? {
+    actual fun openDirectoryPicker(): String? {
         return null;
     }
 }

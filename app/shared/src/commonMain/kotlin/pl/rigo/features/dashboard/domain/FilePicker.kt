@@ -1,11 +1,10 @@
 package pl.rigo.features.dashboard.domain
 
 import androidx.compose.runtime.Composable
-import java.nio.file.Path
 
 expect class FilePicker {
-    fun openDirectoryPicker(): Path?
+    fun openDirectoryPicker(): String?
 }
 
 @Composable
-expect fun rememberFilePicker(): FilePicker {}
+expect fun rememberFilePicker(): FilePicker
