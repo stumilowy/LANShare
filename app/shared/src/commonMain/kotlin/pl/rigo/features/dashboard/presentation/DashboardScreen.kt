@@ -1,31 +1,23 @@
 package pl.rigo.features.dashboard.presentation
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerIcon
-import androidx.compose.ui.input.pointer.pointerHoverIcon
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import org.koin.compose.viewmodel.koinViewModel
 import pl.rigo.features.dashboard.domain.openDirectoryPicker
 import pl.rigo.features.dashboard.presentation.components.FolderLink
 import pl.rigo.features.dashboard.presentation.components.StandardButton
-import pl.rigo.utils.openFolderInExplorer
-import java.awt.Cursor
 
 @Composable
-fun DashboardScreenRoot(viewModel: DashboardViewModel = remember { DashboardViewModel() }) {
+fun DashboardScreenRoot(viewModel: DashboardViewModel = koinViewModel()) {
     DashboardScreen(
         state = viewModel.state,
         onAction = viewModel::onAction,
