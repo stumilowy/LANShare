@@ -6,10 +6,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import pl.rigo.features.dashboard.domain.FilePicker
 import pl.rigo.features.dashboard.domain.rememberFilePicker
 import pl.rigo.features.dashboard.presentation.components.StandardButton
-import java.nio.charset.StandardCharsets
 
 @Composable
 fun DashboardScreenRoot(viewModel: DashboardViewModel = remember { DashboardViewModel() }) {
@@ -47,10 +45,9 @@ fun DashboardScreen(
                         filePicker.openDirectoryPicker()?.let { path ->
                             onAction(DashboardAction.OnDestinationPathChanged(path))
                         }
-                    }
+                    },
                 )
             }
         }
     }
 }
-
