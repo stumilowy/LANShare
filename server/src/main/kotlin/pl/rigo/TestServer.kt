@@ -10,5 +10,4 @@ fun main() {
                     defaultSavingDirection = "C:\\Users\\jacek\\Desktop",
                 ),
         )
-    server.start()
 }

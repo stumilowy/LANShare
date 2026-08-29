@@ -3,7 +3,7 @@ package pl.rigo.server
 import pl.rigo.AppConfig
 
 interface Server {
-    fun start()
+    suspend fun start()
 
-    fun stop()
+    suspend fun stop()
 }

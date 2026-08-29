@@ -38,7 +38,16 @@ fun DashboardScreen(
             modifier = Modifier.padding(16.dp, 12.dp),
         ) {
             StandardButton(
-                text = if (state.isServerRunning) "Stop Server" else "Start Server",
+                text =
+                    if (state.isServerLoading) {
+                        "Loading..."
+                    } else {
+                        if (state.isServerRunning) {
+                            "Stop Server"
+                        } else {
+                            "Start Server"
+                        }
+                    },
                 onClick = {
                     if (state.isServerRunning) {
                         onAction(DashboardAction.OnServerStop)

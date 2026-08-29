@@ -4,6 +4,8 @@ import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
 import io.ktor.server.application.Application
 import io.ktor.server.cio.CIO
+import io.ktor.server.engine.ApplicationEngine
+import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.http.content.staticResources
 import io.ktor.server.request.receiveMultipart
@@ -14,6 +16,9 @@ import io.ktor.server.routing.routing
 import io.ktor.util.cio.writeChannel
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.copyTo
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import pl.rigo.server.Server
 import pl.rigo.utils.isValidWindowsPath
 import java.io.File
@@ -23,23 +28,31 @@ class FileServer(
     private val host: String = "0.0.0.0",
     private val appConfig: AppConfig,
 ) : Server {
-    private val server =
+    private var server =
         embeddedServer(CIO, port = port, host = host) {
             configureRouting()
         }
 
-    override fun start() {
-        if (checkConfiguration()) {
-            server.start(wait = true)
-        } else {
-            throw IllegalArgumentException(
-                "Invalid configuration: ${appConfig.currentSavingDirection}, ${appConfig.defaultSavingDirection}",
-            )
+    override suspend fun start() {
+        server =
+            embeddedServer(CIO, port = port, host = host) {
+                configureRouting()
+            }
+        withContext(Dispatchers.IO) {
+            if (checkConfiguration()) {
+                server.start(wait = false)
+            } else {
+                throw IllegalArgumentException(
+                    "Invalid configuration: ${appConfig.currentSavingDirection}, ${appConfig.defaultSavingDirection}",
+                )
+            }
         }
     }
 
-    override fun stop() {
-        server.stop(0, 0)
+    override suspend fun stop() {
+        withContext(Dispatchers.IO) {
+            server.stop(500, 700)
+        }
     }
 
     private fun checkConfiguration(): Boolean {
